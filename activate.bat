@@ -3,6 +3,24 @@ setlocal EnableDelayedExpansion
 title Windows Config Script
 
 :: ============================================
+:: 接收 KMS 服务器参数
+:: 用法: activate.bat <kms_host:port>
+:: ============================================
+set "KMS_SERVER=%~1"
+if not defined KMS_SERVER (
+    echo.
+    echo ============================================
+    echo ERROR: KMS server address not provided
+    echo ============================================
+    echo.
+    echo Usage: activate.bat ^<kms_host:port^>
+    echo Example: activate.bat 1.2.3.4:1234
+    echo.
+    pause >nul
+    exit /b 1
+)
+
+:: ============================================
 :: 权限检查
 :: ============================================
 net session >nul 2>&1
@@ -57,7 +75,6 @@ goto MENU
 
 :: ============================================
 :: Windows 激活
-:: 参数: %~1 = 激活完成后的跳转 label（可选）
 :: ============================================
 :ACTIVATION
 cls
@@ -126,7 +143,7 @@ timeout /t 2 /nobreak >nul
 goto ACTIVATION
 
 :: ============================================
-:: 核心激活逻辑（子程序，供复用）
+:: 核心激活逻辑（子程序）
 :: ============================================
 :DO_ACTIVATE
 echo.
@@ -138,8 +155,8 @@ if errorlevel 1 (
 )
 
 echo.
-echo  [2/3] Setting KMS server...
-cscript //nologo %windir%\System32\slmgr.vbs /skms 23.80.88.43:10568
+echo  [2/3] Setting KMS server: %KMS_SERVER%
+cscript //nologo %windir%\System32\slmgr.vbs /skms %KMS_SERVER%
 if errorlevel 1 (
     echo  ERROR: KMS server configuration failed!
     exit /b 1
@@ -192,7 +209,7 @@ pause
 goto MENU
 
 :: ============================================
-:: 核心右键菜单逻辑（子程序，供复用）
+:: 核心右键菜单逻辑（子程序）
 :: ============================================
 :DO_CONTEXTMENU
 echo.
@@ -207,7 +224,6 @@ echo  Registry modified successfully.
 echo.
 echo  [2/3] Stopping Explorer...
 taskkill /im explorer.exe >nul 2>&1
-:: 等待 Explorer 完全退出
 :WAIT_KILL
 tasklist /fi "imagename eq explorer.exe" 2>nul | find /i "explorer.exe" >nul
 if not errorlevel 1 (
@@ -218,7 +234,6 @@ if not errorlevel 1 (
 echo.
 echo  [3/3] Restarting Explorer...
 start explorer.exe
-:: 等待 Explorer 完全启动
 :WAIT_START
 tasklist /fi "imagename eq explorer.exe" 2>nul | find /i "explorer.exe" >nul
 if errorlevel 1 (
@@ -284,7 +299,6 @@ set "conf="
 set /p "conf=Confirm activation? (Y/N): "
 if /i not "%conf%"=="Y" goto ALL
 
-:: 执行激活
 call :DO_ACTIVATE
 if errorlevel 1 (
     echo.
@@ -293,7 +307,6 @@ if errorlevel 1 (
     goto MENU
 )
 
-:: 询问是否恢复右键菜单
 echo.
 echo  WARNING: Next step will restart Explorer!
 echo  Save all your work before continuing.
@@ -311,7 +324,6 @@ if /i not "%rest%"=="Y" (
     goto MENU
 )
 
-:: 执行右键菜单恢复
 call :DO_CONTEXTMENU
 if errorlevel 1 (
     echo.
