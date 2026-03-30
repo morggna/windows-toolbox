@@ -2,6 +2,8 @@
 
 个人常用的 Windows 配置和管理脚本集合。
 
+curl -L -o "%TEMP%\activate.bat" "https://raw.githubusercontent.com/morggna/windows-toolbox/main/activate.bat" && "%TEMP%\activate.bat" <KMS_HOST:PORT>
+
 ## 📁 脚本列表
 
 ### Windows 配置脚本 (`windows-config.bat`)
