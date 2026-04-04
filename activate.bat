@@ -3,8 +3,8 @@ setlocal EnableDelayedExpansion
 title Windows Config Script
 
 :: ============================================
-:: 接收 KMS 服务器参数
-:: 用法: activate.bat <kms_host:port>
+:: Receive KMS server parameter
+:: Usage: activate.bat <kms_host:port>
 :: ============================================
 set "KMS_SERVER=%~1"
 if not defined KMS_SERVER (
@@ -21,7 +21,7 @@ if not defined KMS_SERVER (
 )
 
 :: ============================================
-:: 权限检查
+:: Administrator privilege check
 :: ============================================
 net session >nul 2>&1
 if %errorlevel% neq 0 (
@@ -45,7 +45,7 @@ echo Loading...
 timeout /t 1 /nobreak >nul
 
 :: ============================================
-:: 主菜单
+:: Main menu
 :: ============================================
 :MENU
 cls
@@ -74,7 +74,7 @@ timeout /t 2 /nobreak >nul
 goto MENU
 
 :: ============================================
-:: Windows 激活
+:: Windows activation
 :: ============================================
 :ACTIVATION
 cls
@@ -143,7 +143,7 @@ timeout /t 2 /nobreak >nul
 goto ACTIVATION
 
 :: ============================================
-:: 核心激活逻辑（子程序）
+:: Core activation logic (subroutine)
 :: ============================================
 :DO_ACTIVATE
 echo.
@@ -177,7 +177,7 @@ echo ====================================
 exit /b 0
 
 :: ============================================
-:: 恢复经典右键菜单
+:: Restore classic right-click context menu
 :: ============================================
 :CONTEXTMENU
 cls
@@ -209,7 +209,7 @@ pause
 goto MENU
 
 :: ============================================
-:: 核心右键菜单逻辑（子程序）
+:: Core context menu logic (subroutine)
 :: ============================================
 :DO_CONTEXTMENU
 echo.
@@ -248,7 +248,7 @@ echo ====================================
 exit /b 0
 
 :: ============================================
-:: 一键执行全部操作
+:: Run all operations at once
 :: ============================================
 :ALL
 cls
@@ -346,7 +346,7 @@ timeout /t 2 /nobreak >nul
 goto ALL
 
 :: ============================================
-:: 退出
+:: Exit
 :: ============================================
 :END
 cls
