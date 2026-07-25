@@ -1,0 +1,23 @@
+name: Validate scripts
+
+"on":
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  batch-smoke-test:
+    runs-on: windows-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Run activation self-tests
+        shell: cmd
+        run: call activate.bat --self-test
+
+      - name: Run context-menu self-tests
+        shell: cmd
+        run: call classic-context-menu.bat --self-test
